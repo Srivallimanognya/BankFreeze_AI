@@ -1,3 +1,4 @@
+git add README.md
 # BankFreeze AI
 
 BankFreeze AI is an Agentic AI-powered bank account freeze investigation, multi-source reconciliation, and resolution support system. It helps users investigate and understand why a bank account hold or freeze occurred, reconciles bank records with notice documents and authority information, generates factual inquiry representations, and tracks resolution progress.
