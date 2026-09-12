@@ -1,0 +1,23 @@
+[DEMO DATA - SYNTHETIC NOTICE]
+CYBER CRIME POLICE STATION, HYDERABAD
+Requisition Notice under Section 91 Cr.P.C. / IT Act
+Ref No: LEA-DEMO-001
+Date: 12-08-2025
+
+To,
+The Nodal Officer, State Bank of India
+Hyderabad Branch
+
+Subject: Debit Freeze and Account Transaction Records in Complaint No: CC-HYD-2025-0811
+
+Sir/Madam,
+During the investigation of cyber fraud complaint registered by complainant regarding unauthorized UPI/P2P transfer, it is found that an amount of Rs. 18500.00 has been transferred into Bank Account ending in 1001 (IFSC: SBIN0001234) under Transaction ID: TXN-DEMO-001 on 10-08-2025.
+
+You are hereby directed to:
+1. Immediately effect DEBIT FREEZE on the said account or place a LIEN of Rs. 18,500.
+2. Furnish KYC details, account opening form, and complete 6-month statement of account.
+
+Investigating Officer: Inspector K. Sharma (Cyber Cell)
+Contact Email: cybercrime-hyd-demo@police.gov.in
+Phone: 040-2345XXXX / Helpline: 1930
+Jurisdiction: Hyderabad, Telangana

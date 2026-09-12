@@ -1,0 +1,27 @@
+[DEMO DATA - SYNTHETIC NOTICE]
+NATIONAL CYBER CRIME REPORTING PORTAL (NCRRP)
+Ministry of Home Affairs - Indian Cyber Crime Coordination Centre (I4C)
+Acknowledgment No: NCRRP-2025-88412
+Complaint ID: 1930-ACK-88412-2025
+Date: 20-08-2025
+
+URGENT NOTICE TO INTERMEDIARY / BANK: HDFC BANK
+Attention: Central Cyber Cell Operations & Nodal Desk
+
+Subject: Lien Marking Directive on Suspect Beneficiary Account pursuant to 1930 Helpline Alert
+
+This is to communicate that a cyber financial fraud of Rs. 54,200.00 was reported via the 1930 Citizen Financial Cyber Fraud Reporting System.
+The layered fund flow analysis traces the proceeds of crime to:
+Account Number: XXXX-XXXX-2002
+Transaction Reference: TXN-DEMO-002
+Amount: Rs. 54200.00
+Date of Transaction: 19-08-2025
+
+Directive:
+In accordance with Standard Operating Procedure, mark an immediate LIEN_AMOUNT of Rs. 54,200 on Account XXXX-XXXX-2002.
+The account holder is instructed to furnish written justification and trade records to the cyber nodal desk.
+
+Authority: National Cyber Crime Reporting Portal (NCRRP)
+Jurisdiction: New Delhi / NCR Central
+Officer: Nodal Desk Cyber Division
+Contact Information: nodal-cyber-demo@gov.in / Helpline 1930

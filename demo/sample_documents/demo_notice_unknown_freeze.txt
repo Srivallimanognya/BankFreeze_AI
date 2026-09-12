@@ -1,0 +1,20 @@
+[DEMO DATA - SYNTHETIC NOTICE]
+PUNJAB NATIONAL BANK - RISK SURVEILLANCE DESK
+Notice Memo: SEC-PNB-HOLD-MISMATCH
+Date: 01-09-2025
+
+INTERNAL ADMINISTRATIVE HOLD ADVICE
+
+To Customer, Account: XXXX-XXXX-5005
+Notice is hereby given that debit operations have been placed on temporary hold.
+Stated Internal Flag: INTERNAL_AML_ALERT
+Transaction Identifier: TXN-DEMO-005
+Amount: Rs. 78000.00
+Reference Number: AML-ALERT-771
+
+Note: The system record indicates an internal risk surveillance inquiry. The specific statutory order or external requesting authority has NOT BEEN DISCLOSED in the preliminary notice. Customer is advised to approach the home branch for clarification.
+
+Authority: AML Suspicious Activity Unit / Branch Surveillance
+Jurisdiction: Kolkata Regional Directorate
+Officer: Senior AML Investigator
+Contact: aml-desk-demo@pnb-mock.in

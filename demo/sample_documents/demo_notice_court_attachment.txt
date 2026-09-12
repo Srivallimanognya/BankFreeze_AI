@@ -1,0 +1,24 @@
+[DEMO DATA - SYNTHETIC NOTICE]
+IN THE COURT OF THE CHIEF METROPOLITAN MAGISTRATE, BENGALURU
+Criminal Misc. Case No. CC-NO-4402/2025
+Order Ref: SEC91-COURT-2025-04
+Date: 14-06-2025
+
+ORDER OF ATTACHMENT UNDER SECTION 102 OF THE CODE OF CRIMINAL PROCEDURE, 1973
+
+To,
+The Branch Manager, Axis Bank, Indiranagar Branch, Bengaluru
+
+Whereas information has been laid before this Court in Crime No. 89/2025 that funds involved in alleged criminal breach of trust are parked in:
+Account Number: XXXX-XXXX-4004
+Held in the name of the accused respondent.
+Disputed Amount: Rs. 250000.00
+Associated Transaction ID: TXN-DEMO-004
+
+You are hereby commanded to place a TOTAL_FREEZE and attachment upon the said account to the extent of Rs. 2,50,000/-. No withdrawals, electronic transfers, or clearing shall be permitted without express leave of this Court.
+
+Given under the seal of the Court.
+By Order: Registrar / Judicial Bench-3
+Authority: Hon'ble Chief Metropolitan Magistrate Court
+Contact: cmm-bengaluru-demo@ecourts.gov.in
+Jurisdiction: Bengaluru Rural District

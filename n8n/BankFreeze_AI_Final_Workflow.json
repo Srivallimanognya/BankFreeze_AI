@@ -1,0 +1,478 @@
+{
+  "name": "BankFreeze AI – Investigation, Resolution & Escalation (DEMO)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "bankfreeze-case",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "97f9804a-8a49-4163-b730-85f082e3eb2b",
+      "name": "Case Created",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        240
+      ],
+      "webhookId": "eee20987-8ceb-453a-81a2-a773e8b8b2f0"
+    },
+    {
+      "parameters": {
+        "jsCode": "// BANKFREEZE AI - GET CASE\n// DEMO / MOCK DATA ONLY - Case-aware extraction\n\nconst input = $input.first().json || {};\nconst body = input.body || input;\nconst incomingCase = body.case || {};\n\nconst caseId = String(\n  incomingCase.case_id ||\n  body.case_id ||\n  ''\n).trim();\n\nconst valid = caseId !== '';\nconst now = new Date().toISOString();\n\n// Case-specific demo registry matching all demo cases\nconst demoRegistry = {\n  'CASE-DEMO-001': {\n    bank_name: 'State Bank of India',\n    masked_account_number: 'XXXX-XXXX-1001',\n    restriction_type: 'DEBIT_FREEZE',\n    freeze_reason: 'P2P Disputed Transaction Flagged by Cyber Cell [DEMO DATA]',\n    transaction_id: 'TXN-DEMO-001',\n    amount: 18500,\n    authority: 'Cyber Crime Police Station',\n    jurisdiction: 'Cyberabad / Hyderabad, Telangana',\n    reference_number: 'LEA-DEMO-001'\n  },\n  'CASE-DEMO-002': {\n    bank_name: 'HDFC Bank',\n    masked_account_number: 'XXXX-XXXX-2002',\n    restriction_type: 'LIEN_AMOUNT',\n    freeze_reason: '1930 National Cyber Crime Reporting Portal Phishing Lien [DEMO DATA]',\n    transaction_id: 'TXN-DEMO-002',\n    amount: 54200,\n    authority: 'National Cyber Crime Reporting Portal (NCRRP)',\n    jurisdiction: 'New Delhi / NCR Central',\n    reference_number: 'NCRRP-2025-88412'\n  },\n  'CASE-DEMO-003': {\n    bank_name: 'ICICI Bank',\n    masked_account_number: 'XXXX-XXXX-3003',\n    restriction_type: 'TOTAL_FREEZE',\n    freeze_reason: 'Periodic Re-KYC Statutory Non-Compliance Hold [DEMO DATA]',\n    transaction_id: 'TXN-DEMO-003',\n    amount: 0,\n    authority: 'Bank Internal Risk & Compliance',\n    jurisdiction: 'Mumbai Central',\n    reference_number: 'BNK-KYC-99012'\n  },\n  'CASE-DEMO-004': {\n    bank_name: 'Axis Bank',\n    masked_account_number: 'XXXX-XXXX-4004',\n    restriction_type: 'TOTAL_FREEZE',\n    freeze_reason: 'Magistrate Court Attachment Order under Sec 102 CrPC [DEMO DATA]',\n    transaction_id: 'TXN-DEMO-004',\n    amount: 250000,\n    authority: 'Hon\\'ble Chief Metropolitan Magistrate Court',\n    jurisdiction: 'Bengaluru Rural District',\n    reference_number: 'SEC91-COURT-2025-04'\n  },\n  'CASE-DEMO-005': {\n    bank_name: 'Punjab National Bank',\n    masked_account_number: 'XXXX-XXXX-5005',\n    restriction_type: 'DEBIT_FREEZE',\n    freeze_reason: 'Internal Bank Surveillance Hold - External Reason Unspecified [DEMO DATA]',\n    transaction_id: 'TXN-DEMO-005',\n    amount: 78000,\n    authority: 'AML Suspicious Activity Unit',\n    jurisdiction: 'Kolkata Regional Directorate',\n    reference_number: 'AML-ALERT-771'\n  }\n};\n\nconst registered = demoRegistry[caseId] || {};\n\nconst caseInfo = {\n  case_id: caseId || 'CASE-DEMO-UNKNOWN',\n  bank_name: incomingCase.bank_name || registered.bank_name || 'NOT PROVIDED',\n  masked_account_number: incomingCase.masked_account_number || registered.masked_account_number || 'XXXX-XXXX-XXXX',\n  restriction_type: incomingCase.restriction_type || registered.restriction_type || 'NOT PROVIDED',\n  freeze_reason: incomingCase.freeze_reason || registered.freeze_reason || 'NOT PROVIDED',\n  transaction_id: incomingCase.transaction_id || registered.transaction_id || 'NOT PROVIDED',\n  amount: (incomingCase.amount !== undefined && incomingCase.amount !== null) ? incomingCase.amount : (registered.amount !== undefined ? registered.amount : 0),\n  authority: incomingCase.authority || registered.authority || 'NOT PROVIDED',\n  jurisdiction: incomingCase.jurisdiction || registered.jurisdiction || 'NOT PROVIDED',\n  reference_number: incomingCase.reference_number || registered.reference_number || 'NOT PROVIDED',\n  status: incomingCase.status || 'NEW'\n};\n\nconst audit = [\n  {\n    case_id: caseInfo.case_id,\n    timestamp: now,\n    workflow_step: 'GET_CASE',\n    action: valid ? 'CASE_LOADED' : 'INVALID_CASE_ID',\n    result: valid ? 'CASE_LOADED_SUCCESSFULLY' : 'INVALID_CASE_DATA',\n    actor: 'system'\n  }\n];\n\nreturn [{\n  json: {\n    valid: valid,\n    case_id: caseInfo.case_id,\n    case_status: 'NEW',\n    source_label: 'DEMO / MOCK DATA',\n    case: caseInfo,\n    audit_log: audit\n  }\n}];"
+      },
+      "id": "11b21ceb-876f-4086-91a3-950f947d101c",
+      "name": "Get Case",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "valid",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f8b8325d-aa4e-4776-9540-06829b012acf",
+      "name": "Valid Case?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// DEMO / MOCK DATA — Case-aware bank verification\nconst d = $input.first().json;\nconst c = d.case || {};\nconst now = new Date().toISOString();\n\nconst bank = {\n  status: 'RESTRICTED',\n  bank_name: c.bank_name || 'NOT PROVIDED',\n  restriction_type: c.restriction_type || 'DEBIT_FREEZE',\n  reason: c.freeze_reason || 'NOT PROVIDED',\n  transaction_id: c.transaction_id || 'NOT PROVIDED',\n  amount: c.amount || 0,\n  reference_number: c.reference_number || 'NOT PROVIDED',\n  requesting_authority: c.authority || 'NOT PROVIDED',\n  jurisdiction: c.jurisdiction || 'NOT PROVIDED',\n  source_label: 'DEMO / MOCK DATA'\n};\n\nconst audit = (d.audit_log || []).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'BANK_VERIFICATION', action: 'BANK_CHECKED', result: 'RESTRICTED', actor: 'system' }\n]);\n\nreturn [{ json: { ...d, bank, case_status: 'BANK_VERIFICATION', audit_log: audit } }];"
+      },
+      "id": "de650f8f-6f6d-4f50-9a16-b14df8e1f80f",
+      "name": "Mock Bank Verification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst audit = (d.audit_log||[]).concat([\n  { case_id:d.case_id, timestamp:now, workflow_step:'ERROR_HANDLING', action:'INVALID_CASE_ID', result:'ROUTED_TO_HUMAN_REVIEW', actor:'system' }\n]);\nreturn [{\n  json: {\n    ...d,\n    error: true,\n    final_status: 'ERROR',\n    user_result: {\n      case_information: { case_id: d.case_id || 'UNKNOWN', status: 'INVALID_CASE' },\n      investigation_findings: ['Invalid or missing case data in trigger payload.'],\n      ai_assessment: { known_information: [], unknown_information: ['Case could not be identified.'], matches: [], conflicts: [], clarification_required: ['Provide a valid case ID.'], next_action: 'RE-VERIFY_CASE_SELECTION' },\n      risk_assessment: { risk_level: 'HIGH', reason: 'Invalid or missing case payload.' },\n      recommended_action: 'VERIFY_CASE_RECORD',\n      human_review: { required: true, decision: 'REJECT', approval_channel: 'system' },\n      communication: { status: 'NOT_GENERATED', body: 'No communication generated.' },\n      missing_information: ['Valid case identifier'],\n      account_action: { action_taken: 'NO AUTOMATIC UNFREEZE', note: 'No account unfreeze performed.' },\n      final_status: 'ERROR'\n    },\n    source_label: 'DEMO / MOCK DATA'\n  }\n}];"
+      },
+      "id": "e272f70b-a53c-4502-aa01-04993203364b",
+      "name": "Handle Invalid Case",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst b = d.bank || {};\n\nconst authority = {\n  authority_name: b.requesting_authority || 'NOT PROVIDED',\n  jurisdiction: b.jurisdiction || 'NOT PROVIDED',\n  reference_number: b.reference_number || 'NOT PROVIDED',\n  police_officer: 'NOT PROVIDED',\n  police_station: 'NOT PROVIDED',\n  fir_number: 'NOT PROVIDED',\n  complaint_number: 'NOT PROVIDED',\n  legal_order: 'NOT PROVIDED',\n  contact_details: 'NOT PROVIDED'\n};\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'AUTHORITY_IDENTIFICATION', action: 'AUTHORITY_IDENTIFIED', result: authority.authority_name, actor: 'system' }\n]);\n\nreturn [{ json: { ...d, authority, case_status: 'AUTHORITY_IDENTIFICATION', audit_log: audit } }];"
+      },
+      "id": "2832704e-9f0d-4f38-bd10-9d2501f796e3",
+      "name": "Identify Authority",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// DEMO / MOCK DATA — Case-aware mock authority inquiry response\nconst d = $input.first().json;\nconst now = new Date().toISOString();\nconst c = d.case || {};\nconst b = d.bank || {};\n\nconst authority_info = {\n  available: c.authority !== 'NOT PROVIDED',\n  authority_name: c.authority || b.requesting_authority || 'NOT PROVIDED',\n  reference_number: c.reference_number || b.reference_number || 'NOT PROVIDED',\n  transaction_id: c.transaction_id || b.transaction_id || 'NOT PROVIDED',\n  amount: c.amount || b.amount || 0,\n  case_status: 'RECORDED',\n  jurisdiction: c.jurisdiction || b.jurisdiction || 'NOT PROVIDED',\n  source_label: 'DEMO DATA'\n};\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'AUTHORITY_INFO', action: 'AUTHORITY_INFO_FETCHED', result: authority_info.available ? 'FETCHED' : 'NOT_PROVIDED', actor: 'system' }\n]);\n\nreturn [{ json: { ...d, authority_info, audit_log: audit } }];"
+      },
+      "id": "38ed22ae-d148-4903-821f-9fcb98caed2a",
+      "name": "Mock Authority Info",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst c = d.case || {};\nconst b = d.bank || {};\nconst a = d.authority_info || {};\n\nfunction norm(v) {\n  return (v === undefined || v === null || v === 'NOT PROVIDED' || v === '') ? null : String(v).trim().toLowerCase();\n}\n\nfunction cmp(vals) {\n  const raw = vals.map(norm);\n  const present = raw.filter(v => v !== null);\n  if (present.length < 2) return 'MATCH';\n  return present.every(v => v === present[0]) ? 'MATCH' : 'MISMATCH';\n}\n\nconst comparison = {\n  transaction_id: cmp([c.transaction_id, b.transaction_id, a.transaction_id]),\n  amount: cmp([c.amount, b.amount, a.amount]),\n  freeze_reason: cmp([c.freeze_reason, b.reason]),\n  authority: cmp([c.authority, b.requesting_authority, a.authority_name]),\n  reference_number: cmp([c.reference_number, b.reference_number, a.reference_number])\n};\n\nconst isMismatch = d.case_id === 'CASE-DEMO-005' || comparison.transaction_id === 'MISMATCH' || comparison.amount === 'MISMATCH';\nconst case_risk = isMismatch ? 'INFORMATION_MISMATCH' : (c.case_id === 'CASE-DEMO-004' ? 'HIGH_JUDICIAL_RESTRICTION' : 'NORMAL');\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'SOURCE_RECONCILIATION', action: 'SOURCES_COMPARED', result: case_risk, actor: 'system' }\n]);\n\nreturn [{ json: { ...d, comparison, case_risk, case_status: 'CASE_ANALYSIS', audit_log: audit } }];"
+      },
+      "id": "38fc29bc-7f90-44ad-a26d-54967fda3dc7",
+      "name": "Compare Sources",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "risk",
+              "leftValue": "={{ $json.case_risk }}",
+              "rightValue": "INFORMATION_MISMATCH",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7c004709-8db5-43de-8286-fb28a5c8c323",
+      "name": "Critical Mismatch?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'SOURCE_RECONCILIATION', action: 'MISMATCH_DETECTED', result: 'AUTOMATIC_COMMUNICATION_STOPPED', actor: 'system' },\n  { case_id: d.case_id, timestamp: now, workflow_step: 'UPDATE_STATUS', action: 'STATUS_UPDATED', result: 'USER_REVIEW', actor: 'system' }\n]);\nreturn [{ json: { ...d, case_status: 'USER_REVIEW', automatic_processing_stopped: true, audit_log: audit } }];"
+      },
+      "id": "b5ce0941-5708-487e-bb48-f4e23e9db19c",
+      "name": "Route To Human Review",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1856,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deterministic Case-Aware AI Assessment\nconst d = $input.first().json;\nconst now = new Date().toISOString();\nconst c = d.case || {};\nconst b = d.bank || {};\n\nconst knowns = [\n  `Case Identifier: ${c.case_id}`,\n  `Restricted Bank: ${c.bank_name} (${c.masked_account_number})`,\n  `Nature of Restriction: ${c.restriction_type}`,\n  `Recorded Freeze Reason: ${c.freeze_reason}`,\n  `Statutory / Notice Ref: ${c.reference_number}`,\n  `Identified Authority: ${c.authority} (${c.jurisdiction})`\n];\n\nconst unknowns = [\n  'Investigating Officer direct phone desk number: NOT PROVIDED',\n  'Original physical requisition docket: NOT UPLOADED'\n];\n\nconst matches = [\n  `Transaction reference ${c.transaction_id} matches bank record.`,\n  `Restriction type ${c.restriction_type} confirmed by ${c.bank_name}.`\n];\n\nconst conflicts = d.case_risk === 'INFORMATION_MISMATCH' \n  ? ['Internal bank surveillance alert conflicts with external police report.'] \n  : ['No conflicting values detected across submitted sources.'];\n\nconst clarification_required = [\n  'Confirm whether lien can be isolated to disputed amount.',\n  'Request certified copy of requisition from bank nodal desk.'\n];\n\nlet next_action = 'DISPATCH_FACTUAL_REPRESENTATION';\nif (c.case_id === 'CASE-DEMO-004') {\n  next_action = 'SUBMIT_LEGAL_REPRESENTATION_AND_APPEARANCE';\n} else if (c.case_id === 'CASE-DEMO-003') {\n  next_action = 'SUBMIT_RE_KYC_DOCUMENTS_TO_BRANCH';\n} else if (c.case_id === 'CASE-DEMO-005') {\n  next_action = 'REQUEST_INTERNAL_AML_CLARIFICATION';\n}\n\nconst ai_assessment = {\n  known_information: knowns,\n  unknown_information: unknowns,\n  matches: matches,\n  conflicts: conflicts,\n  clarification_required: clarification_required,\n  next_action: next_action\n};\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'CASE_ANALYSIS', action: 'AI_ANALYSIS_COMPLETED', result: 'ANALYSIS_GENERATED', actor: 'ai_agent' }\n]);\n\nreturn [{ json: { ...d, ai_assessment, case_status: 'CASE_ANALYSIS', audit_log: audit } }];"
+      },
+      "id": "41c39d83-0c93-49a1-89a6-d27f109dc5d6",
+      "name": "AI Analysis Recorded",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst c = d.case || {};\nconst next_action = (d.ai_assessment && d.ai_assessment.next_action) || 'REQUEST_CLARIFICATION';\n\nconst action_plan = {\n  next_action: next_action,\n  reason: `Procedural resolution recommendation for case ${c.case_id} (${c.bank_name})`,\n  required_information: ['Case reference verification', 'Applicable review procedure'],\n  human_review_required: true\n};\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'ACTION_PLAN', action: 'ACTION_PLAN_GENERATED', result: action_plan.next_action, actor: 'system' }\n]);\n\nreturn [{ json: { ...d, action_plan, case_status: 'ACTION_REQUIRED', audit_log: audit } }];"
+      },
+      "id": "3fe06442-979e-4f88-a0b4-f616147311f2",
+      "name": "Generate Action Plan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2368,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst c = d.case || {};\nconst comm_type = d.authority_info && d.authority_info.available ? 'AUTHORITY_CLARIFICATION' : 'BANK_CLARIFICATION';\nconst subject = `Clarification request regarding case ${c.case_id} / Ref: ${c.reference_number} (DEMO)`;\n\nconst bodyLines = [\n  'This is a DEMO communication draft generated by BankFreeze AI. It has NOT been sent to any real party.',\n  '',\n  `Case reference: ${c.case_id}`,\n  `Bank: ${c.bank_name || 'NOT PROVIDED'}`,\n  `Masked account: ${c.masked_account_number || 'NOT PROVIDED'}`,\n  `Restriction type: ${c.restriction_type || 'NOT PROVIDED'}`,\n  `Reference number: ${c.reference_number || 'NOT PROVIDED'}`,\n  `Target Authority: ${(d.authority && d.authority.authority_name) || 'NOT PROVIDED'}`,\n  '',\n  'Request: We respectfully request clarification on the applicable review procedure and confirmation of the reference details associated with this restriction. No sensitive credentials (PIN/OTP/password) are transmitted or requested.'\n];\n\nconst communication_draft = {\n  type: comm_type,\n  subject: subject,\n  body: bodyLines.join('\\n'),\n  based_on: 'verified mock data only'\n};\n\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'COMMUNICATION_DRAFT', action: 'COMMUNICATION_GENERATED', result: comm_type, actor: 'system' }\n]);\n\nreturn [{ json: { ...d, communication_draft, case_status: 'ACTION_REQUIRED', audit_log: audit } }];"
+      },
+      "id": "d2efc1c1-6021-49b9-b2c4-efea8dad7054",
+      "name": "Generate Communication Draft",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2592,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const c = $input.first().json;\nconst decision = 'APPROVE';\nconst body = c.communication_draft.body;\nreturn [{ json: { ...c, approval_decision: decision, approval_channel: 'demo_input', communication_body: body, approved_at: new Date().toISOString() } }];"
+      },
+      "id": "64656625-b18b-45ca-8541-29fc222587d2",
+      "name": "Apply Demo Approval",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2816,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\nconst now = new Date().toISOString();\nconst audit = (d.audit_log||[]).concat([\n  { case_id: d.case_id, timestamp: now, workflow_step: 'HUMAN_APPROVAL', action: 'HUMAN_APPROVAL_RECEIVED', result: d.approval_decision, actor: 'human' },\n  { case_id: d.case_id, timestamp: now, workflow_step: 'UPDATE_STATUS', action: 'STATUS_UPDATED', result: 'COMPLETED', actor: 'system' }\n]);\nreturn [{ json: { ...d, case_status: 'APPROVED', audit_log: audit } }];"
+      },
+      "id": "ee085d70-a27d-484c-8bdb-fa6945019377",
+      "name": "Approval Recorded",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3040,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// BANKFREEZE AI - WORKFLOW COMPLETE\n// Compiles the exact structured JSON response for Streamlit dashboard\nconst d = $input.first().json;\nconst c = d.case || {};\nconst b = d.bank || {};\nconst a = d.authority_info || {};\nconst ai = d.ai_assessment || {};\nconst ap = d.action_plan || {};\nconst cd = d.communication_draft || {};\n\nconst findings = [\n  `Bank Verification (${c.bank_name}): Status confirmed as ${b.status || 'RESTRICTED'} (${c.restriction_type}).`,\n  `Freeze Basis: ${c.freeze_reason}.`,\n  `Disputed Transaction ID: ${c.transaction_id || 'NOT PROVIDED'} (Amount: ₹${c.amount || 0}).`,\n  `Requisitioning Body: ${c.authority || 'NOT PROVIDED'} (${c.jurisdiction || 'NOT PROVIDED'}).`\n];\n\nconst missing = (c.case_id === 'CASE-DEMO-005') \n  ? ['Documentary grounds for internal AML hold'] \n  : ((c.case_id === 'CASE-DEMO-004') ? ['Certified copy of Magistrate order schedule'] : ['Physical requisition copy from IO']);\n\nconst structuredResult = {\n  case_id: d.case_id,\n  final_status: 'COMPLETED',\n  user_result: {\n    case_information: {\n      case_id: d.case_id,\n      bank_name: c.bank_name || 'NOT PROVIDED',\n      masked_account_number: c.masked_account_number || 'NOT PROVIDED',\n      restriction_type: c.restriction_type || 'NOT PROVIDED',\n      freeze_reason: c.freeze_reason || 'NOT PROVIDED',\n      status: 'COMPLETED'\n    },\n    investigation_findings: findings,\n    ai_assessment: {\n      known_information: ai.known_information || [],\n      unknown_information: ai.unknown_information || [],\n      matches: ai.matches || [],\n      conflicts: ai.conflicts || [],\n      clarification_required: ai.clarification_required || [],\n      next_action: ai.next_action || 'REQUEST_CLARIFICATION'\n    },\n    risk_assessment: {\n      risk_level: d.case_risk || 'NORMAL',\n      reason: `Investigation assessment completed for case ${d.case_id}.`\n    },\n    recommended_action: ap.next_action || 'REQUEST_CLARIFICATION',\n    human_review: {\n      required: true,\n      decision: d.approval_decision || 'APPROVED',\n      approval_channel: d.approval_channel || 'demo_input'\n    },\n    communication: {\n      status: 'DEMO_RECORDED',\n      subject: cd.subject || '',\n      body: d.communication_body || cd.body || ''\n    },\n    missing_information: missing,\n    account_action: {\n      action_taken: 'NO AUTOMATIC UNFREEZE',\n      note: 'No automatic account unfreeze is performed by this prototype.'\n    },\n    final_status: 'COMPLETED'\n  },\n  source_label: 'DEMO / MOCK DATA'\n};\n\nreturn [{ json: structuredResult }];"
+      },
+      "id": "bbfbbe89-d4ef-4bfc-b5c1-661d73e0fe7e",
+      "name": "Workflow Complete",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3264,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "5f8db340-06ec-4c60-8459-b1dca50a98f1",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        3488,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Case Created": {
+      "main": [
+        [
+          {
+            "node": "Get Case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Case": {
+      "main": [
+        [
+          {
+            "node": "Valid Case?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Case?": {
+      "main": [
+        [
+          {
+            "node": "Mock Bank Verification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Invalid Case",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Bank Verification": {
+      "main": [
+        [
+          {
+            "node": "Identify Authority",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Invalid Case": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Identify Authority": {
+      "main": [
+        [
+          {
+            "node": "Mock Authority Info",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mock Authority Info": {
+      "main": [
+        [
+          {
+            "node": "Compare Sources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Sources": {
+      "main": [
+        [
+          {
+            "node": "Critical Mismatch?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Critical Mismatch?": {
+      "main": [
+        [
+          {
+            "node": "Route To Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Analysis Recorded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route To Human Review": {
+      "main": [
+        [
+          {
+            "node": "AI Analysis Recorded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Analysis Recorded": {
+      "main": [
+        [
+          {
+            "node": "Generate Action Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Action Plan": {
+      "main": [
+        [
+          {
+            "node": "Generate Communication Draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Communication Draft": {
+      "main": [
+        [
+          {
+            "node": "Apply Demo Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Demo Approval": {
+      "main": [
+        [
+          {
+            "node": "Approval Recorded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Recorded": {
+      "main": [
+        [
+          {
+            "node": "Workflow Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Complete": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

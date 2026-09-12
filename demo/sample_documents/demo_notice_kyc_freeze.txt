@@ -1,0 +1,24 @@
+[DEMO DATA - SYNTHETIC NOTICE]
+ICICI BANK LIMITED - RETAIL OPERATIONS & COMPLIANCE
+Branch: Mumbai Central Branch
+Notice Ref: BNK-KYC-99012
+Date: 05-07-2025
+
+NOTICE OF ACCOUNT SUSPENSION / TOTAL FREEZE DUE TO NON-COMPLIANCE OF RE-KYC
+
+Dear Customer,
+Account Number: XXXX-XXXX-3003
+Transaction ID: TXN-DEMO-003 (Disputed Maintenance Ledger)
+
+Despite repeated reminders sent to your registered address and mobile number, your account KYC records have not been refreshed within the RBI mandated periodicity.
+In compliance with RBI Master Directions on KYC, operations in your savings account ending in 3003 have been placed under TOTAL_FREEZE with immediate effect.
+
+No debit or credit transactions will be honored until:
+1. Physical submission of self-attested Aadhaar / PAN card.
+2. Latest proof of residential address.
+3. In-person verification at the nearest branch.
+
+Issued By: Branch Operations Manager
+Authority: Bank Internal Risk & Compliance
+Contact: kyc-compliance-demo@icici-mock.com / 1800-200-XXXX
+Jurisdiction: Mumbai Central
